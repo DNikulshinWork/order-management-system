@@ -1,0 +1,16 @@
+{
+  "name": "order-management-system",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "build": "pnpm turbo build",
+    "dev": "pnpm turbo dev",
+    "test": "pnpm turbo test",
+    "lint": "pnpm turbo lint",
+    "typecheck": "pnpm turbo typecheck"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.6"
+  }
+}
