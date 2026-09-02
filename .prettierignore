@@ -30,4 +30,10 @@ pnpm-lock.yaml
 turbo.json
 
 # Документация и архитектура (опционально, можно оставить для контекста)
-# docs/
+# docs/# Сгенерированные файлы
+apps/*/dist/
+apps/*/tests/**/*.d.ts
+apps/*/tests/**/*.js
+apps/*/tests/**/*.js.map
+packages/*/dist/
+tooling/*/dist/
