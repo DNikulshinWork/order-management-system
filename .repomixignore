@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.turbo/
+coverage/
+.git/
+.github/
+infrastructure/
+.dependency-cruiser.cjs
+.npmrc
+*.log
+.env*

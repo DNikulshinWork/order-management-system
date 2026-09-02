@@ -4,17 +4,19 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build": "tsc -b",
+    "build": "NODE_OPTIONS=--max-old-space-size=512 tsc -b",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
     "typecheck": "tsc -b"
   },
-  "dependencies": {},
+  "dependencies": {
+    "fastify": "^4.28.0"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.2",
+    "tsx": "^4.7.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vitest": "^3.2.0"
   }

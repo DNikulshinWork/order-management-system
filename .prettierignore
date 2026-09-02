@@ -37,3 +37,10 @@ apps/*/tests/**/*.js
 apps/*/tests/**/*.js.map
 packages/*/dist/
 tooling/*/dist/
+# Сгенерированные файлы
+apps/*/dist/
+apps/*/tests/**/*.d.ts
+apps/*/tests/**/*.js
+apps/*/tests/**/*.js.map
+packages/*/dist/
+tooling/*/dist/

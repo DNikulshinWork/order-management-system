@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.15.0",
   "scripts": {
-    "build": "pnpm turbo run build",
+    "build": "pnpm turbo run build --concurrency=1",
     "dev": "pnpm turbo run dev",
     "test": "pnpm turbo run test",
     "lint": "pnpm eslint .",

@@ -3,6 +3,10 @@ import { createApp } from './app.js';
 const port = Number(process.env.PORT) || 3000;
 const app = createApp();
 
-app.listen(port, () => {
+app.listen({ port, host: '0.0.0.0' }, (err) => {
+  if (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
   console.log(`Order Service running on port ${port}`);
 });

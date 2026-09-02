@@ -34,4 +34,7 @@ temp/
 
 # Repomix
 repomix-output*.md
-.repomixignore
+.repomixignore# Сгенерированные файлы в тестах
+apps/*/tests/**/*.d.ts
+apps/*/tests/**/*.js
+apps/*/tests/**/*.js.map
