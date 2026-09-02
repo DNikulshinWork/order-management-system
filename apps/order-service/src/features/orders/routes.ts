@@ -2,13 +2,59 @@ import type { FastifyInstance } from 'fastify';
 import * as service from './service.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 
+// Схемы для валидации
+const createOrderSchema = {
+  body: {
+    type: 'object',
+    required: ['items', 'total'],
+    properties: {
+      items: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['productId', 'quantity', 'price'],
+          properties: {
+            productId: { type: 'string' },
+            quantity: { type: 'number', minimum: 1 },
+            price: { type: 'number', minimum: 0 },
+          },
+        },
+      },
+      total: { type: 'number', minimum: 0 },
+    },
+  },
+};
+
+const updateOrderSchema = {
+  body: {
+    type: 'object',
+    properties: {
+      status: {
+        type: 'string',
+        enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+      },
+      items: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['productId', 'quantity', 'price'],
+          properties: {
+            productId: { type: 'string' },
+            quantity: { type: 'number', minimum: 1 },
+            price: { type: 'number', minimum: 0 },
+          },
+        },
+      },
+      total: { type: 'number', minimum: 0 },
+    },
+  },
+};
+
 export async function ordersRoutes(app: FastifyInstance) {
-  // GET /orders
   app.get('/orders', async () => {
     return service.getOrders();
   });
 
-  // GET /orders/:id
   app.get('/orders/:id', async (request) => {
     const { id } = request.params as { id: string };
     const order = service.getOrderById(id);
@@ -18,14 +64,12 @@ export async function ordersRoutes(app: FastifyInstance) {
     return order;
   });
 
-  // POST /orders
-  app.post('/orders', async (request) => {
+  app.post('/orders', { schema: createOrderSchema }, async (request) => {
     const input = request.body as CreateOrderInput;
     return service.createOrder(input);
   });
 
-  // PUT /orders/:id
-  app.put('/orders/:id', async (request) => {
+  app.put('/orders/:id', { schema: updateOrderSchema }, async (request) => {
     const { id } = request.params as { id: string };
     const input = request.body as UpdateOrderInput;
     const updated = service.updateOrder(id, input);
@@ -35,7 +79,6 @@ export async function ordersRoutes(app: FastifyInstance) {
     return updated;
   });
 
-  // DELETE /orders/:id
   app.delete('/orders/:id', async (request) => {
     const { id } = request.params as { id: string };
     const deleted = service.deleteOrder(id);

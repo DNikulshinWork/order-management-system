@@ -1,16 +1,16 @@
 FROM node:20.19.0-alpine
 WORKDIR /app
 
+RUN apk add --no-cache curl  # Добавляем curl для отладки
+
 RUN npm install -g pnpm@10.15.0
 
 # Копируем package.json и устанавливаем prod зависимости
 COPY apps/order-service/package.json ./package.json
 RUN pnpm install --prod --no-frozen-lockfile
 
-# Копируем собранный dist
+# Копируем собранный dist и миграции
 COPY apps/order-service/dist ./dist
-
-# Копируем миграции (так как они не входят в dist)
 COPY apps/order-service/src/db/migrations ./dist/db/migrations
 
 ENV NODE_ENV=production

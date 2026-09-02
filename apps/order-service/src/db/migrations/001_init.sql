@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS orders (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  items JSONB NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
