@@ -8,7 +8,7 @@ on:
       - 'tooling/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
-      - 'apps/order-service/Dockerfile'
+      - 'Dockerfile*'
   workflow_dispatch:
 
 env:
