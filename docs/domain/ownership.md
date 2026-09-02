@@ -1,4 +1,3 @@
-
 Domain Ownership
 Ownership principle
 
@@ -11,26 +10,26 @@ data
 API
 runtime responsibility
 Current ownership state
-Responsibility	Owner	Data owner	Status
-Order lifecycle	Order Management	Order Management	Working baseline
-Authentication	Undecided	Undecided	Candidate
-Authorization	Undecided	Undecided	Candidate
-Customer lifecycle	Undecided	Undecided	Candidate
-Product catalog	Undecided	Undecided	Candidate
-Inventory	Undecided	Undecided	Candidate
-Payment lifecycle	Undecided	Undecided	Candidate
-Fulfillment lifecycle	Undecided	Undecided	Candidate
-Notifications	Undecided	Undecided	Candidate
+Responsibility Owner Data owner Status
+Order lifecycle Order Management Order Management Working baseline
+Authentication Undecided Undecided Candidate
+Authorization Undecided Undecided Candidate
+Customer lifecycle Undecided Undecided Candidate
+Product catalog Undecided Undecided Candidate
+Inventory Undecided Undecided Candidate
+Payment lifecycle Undecided Undecided Candidate
+Fulfillment lifecycle Undecided Undecided Candidate
+Notifications Undecided Undecided Candidate
 Order Management ownership
 
 Current working boundary:
 
 Order Management
-    │
-    ├── order lifecycle
-    ├── order rules
-    ├── order API
-    └── order data
+│
+├── order lifecycle
+├── order rules
+├── order API
+└── order data
 
 No other candidate capability may directly own or modify order data.
 
@@ -39,9 +38,9 @@ Data ownership rule
 The eventual architecture follows:
 
 one capability
-      ↓
+↓
 one owner
-      ↓
+↓
 owned data
 
 A different service must obtain required information through an explicit
@@ -50,15 +49,15 @@ contract rather than direct database access.
 Forbidden:
 
 Service A
-    ↓
+↓
 Service B database
 
 Allowed:
 
 Service A
-    ↓
+↓
 API / Event
-    ↓
+↓
 Service B
 Ownership questions
 

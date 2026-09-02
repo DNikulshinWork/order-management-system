@@ -1,5 +1,5 @@
-
 Ownership Model
+
 1. Ownership is the primary architectural principle
 
 Every responsibility must have an owner.
@@ -20,11 +20,10 @@ configuration
 Example:
 
 Orders Service
-    owns
-    ├── order lifecycle
-    ├── order API
-    └── order data
-3. Capability ownership
+owns
+├── order lifecycle
+├── order API
+└── order data 3. Capability ownership
 
 Before creating a microservice, identify the capability.
 
@@ -46,7 +45,7 @@ existing service or feature.
 Each service owns its data.
 
 service
-   ↓
+↓
 owned database
 
 Other services access that information through explicit contracts.
@@ -56,13 +55,13 @@ Other services access that information through explicit contracts.
 New implementation starts inside the smallest responsible boundary.
 
 new code
-   ↓
+↓
 local service
-   ↓
+↓
 real reuse appears
-   ↓
+↓
 evaluate extraction
-   ↓
+↓
 workspace package
 
 Do not extract code into a package merely because it might be useful later.
@@ -72,11 +71,11 @@ Do not extract code into a package merely because it might be useful later.
 A capability may evolve:
 
 module
-   ↓
+↓
 feature
-   ↓
+↓
 service
-   ↓
+↓
 microservice
 
 A microservice becomes justified when the capability has autonomous ownership

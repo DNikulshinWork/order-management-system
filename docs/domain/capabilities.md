@@ -1,4 +1,3 @@
-
 Capability Map
 Purpose
 
@@ -9,23 +8,23 @@ A capability is not automatically a microservice.
 The same capability may initially live as:
 
 feature
-    ↓
+↓
 internal service
-    ↓
+↓
 microservice
 
 depending on demonstrated ownership and runtime requirements.
 
 Capability inventory
-Capability	Status	Current interpretation	Independent service?
-Order Management	Confirmed by project identity	Core order lifecycle	Not decided
-Identity & Access	Candidate	Authentication and authorization	Not decided
-Customer Management	Candidate	Customer/account information	Not decided
-Product Catalog	Candidate	Product information available for ordering	Not decided
-Inventory	Candidate	Stock availability and reservation	Not decided
-Payments	Candidate	Payment processing state	Not decided
-Fulfillment	Candidate	Shipment / fulfillment lifecycle	Not decided
-Notifications	Candidate	Delivery of operational notifications	Not decided
+Capability Status Current interpretation Independent service?
+Order Management Confirmed by project identity Core order lifecycle Not decided
+Identity & Access Candidate Authentication and authorization Not decided
+Customer Management Candidate Customer/account information Not decided
+Product Catalog Candidate Product information available for ordering Not decided
+Inventory Candidate Stock availability and reservation Not decided
+Payments Candidate Payment processing state Not decided
+Fulfillment Candidate Shipment / fulfillment lifecycle Not decided
+Notifications Candidate Delivery of operational notifications Not decided
 Important interpretation
 
 Only Order Management is currently grounded by the project identity itself.
@@ -53,11 +52,11 @@ These are capability hypotheses, not final requirements.
 
 Candidate ownership
 Order Management
-    owns
-    ├── order lifecycle
-    ├── order business rules
-    ├── order API
-    └── order data
+owns
+├── order lifecycle
+├── order business rules
+├── order API
+└── order data
 
 This follows the ED ownership principle: a service owns its code,
 business rules, API and data.
@@ -138,7 +137,7 @@ Does it require a clear external contract?
 If the answer is insufficient:
 
 capability
-    ↓
+↓
 existing service / feature
 
 rather than a new microservice.

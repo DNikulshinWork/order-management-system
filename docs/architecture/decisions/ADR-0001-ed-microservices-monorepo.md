@@ -1,4 +1,3 @@
-
 ADR-0001: Adopt ED Microservices Monorepo as Architectural Baseline
 Status: Accepted
 Date: 2026-09-02
@@ -26,13 +25,13 @@ Adopt the ED Microservices Monorepo Pattern as the architectural baseline.
 The architecture uses:
 
 Monorepo
-    ↓
+↓
 Microservices
-    ↓
+↓
 ED internal architecture
-    ↓
+↓
 Explicit contracts
-    ↓
+↓
 Independent runtime
 
 At repository level:
@@ -52,11 +51,11 @@ shared/
 Dependency direction:
 
 app
- ↓
+↓
 features
- ↓
+↓
 services
- ↓
+↓
 shared
 
 Cross-service integration uses explicit contracts and runtime communication.
@@ -98,10 +97,9 @@ runtime boundary are justified.
 
 Governing principle
 Local first
-    ↓
+↓
 Reuse second
-    ↓
+↓
 Extract only when justified
-    ↓
+↓
 Deploy independently when ownership becomes autonomous
-

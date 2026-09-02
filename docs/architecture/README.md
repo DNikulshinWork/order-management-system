@@ -66,3 +66,4 @@ Architecture evolves with the system.
 
 Do not create new microservices, packages, or architectural layers without
 a concrete responsibility and a justified reason for the boundary.
+```

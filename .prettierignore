@@ -1,6 +1,33 @@
+# Repomix ignore file
+# Исключаем всё, что не нужно для контекста AI
+
+# Зависимости и сборка
 node_modules/
 dist/
 build/
 .turbo/
 coverage/
+
+# Системные и служебные файлы
 .git/
+.github/
+.vscode/
+.idea/
+*.log
+.DS_Store
+
+# Секреты и конфиденциальное
+.env*
+*.pem
+*.key
+*secret*
+
+# Инфраструктурные файлы (не нужны для бизнес-контекста)
+infrastructure/
+.dependency-cruiser.cjs
+.npmrc
+pnpm-lock.yaml
+turbo.json
+
+# Документация и архитектура (опционально, можно оставить для контекста)
+# docs/

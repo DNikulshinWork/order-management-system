@@ -10,7 +10,8 @@
     "lint": "pnpm eslint .",
     "typecheck": "pnpm tsc -b tsconfig.json",
     "format": "pnpm prettier . --write",
-    "format:check": "pnpm prettier . --check"
+    "format:check": "pnpm prettier . --check",
+    "depcruise": "depcruise --config .dependency-cruiser.cjs apps packages"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -18,11 +19,13 @@
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@typescript/native": "npm:typescript@^7.0.2",
+    "dependency-cruiser": "^16.10.0",
     "eslint": "^10.9.1",
     "prettier": "^3.9.6",
     "turbo": "^2.5.6",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.69.0"
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^3.2.0"
   },
   "engines": {
     "node": ">=20.19.0"

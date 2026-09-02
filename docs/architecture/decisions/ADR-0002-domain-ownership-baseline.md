@@ -1,4 +1,3 @@
-
 ADR-0002: Establish Domain and Ownership Baseline
 Status: Accepted
 Date: 2026-09-02
@@ -70,14 +69,13 @@ Additional domain discovery is required before implementation of several
 capabilities.
 Governing principle
 Capability
-    ↓
+↓
 Ownership
-    ↓
+↓
 Data ownership
-    ↓
+↓
 Boundary decision
-    ↓
+↓
 Contract
-    ↓
+↓
 Runtime
-

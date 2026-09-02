@@ -63,3 +63,4 @@ The domain model is authoritative only to the extent supported by project
 requirements and accepted architecture decisions.
 
 Candidates must not automatically become applications in apps/.
+```

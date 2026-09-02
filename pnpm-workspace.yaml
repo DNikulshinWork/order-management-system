@@ -1,4 +1,7 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-  - "tooling/*"
+  - apps/*
+  - packages/*
+  - tooling/*
+
+ignoredBuiltDependencies:
+  - esbuild

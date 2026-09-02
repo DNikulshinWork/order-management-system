@@ -1,5 +1,9 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "files": [],
-  "references": []
+  "references": [
+    { "path": "tooling/eslint-config" },
+    { "path": "tooling/prettier-config" },
+    { "path": "tooling/typescript-config" }
+  ]
 }

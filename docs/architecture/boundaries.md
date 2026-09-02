@@ -1,5 +1,5 @@
-
 Architecture Boundaries
+
 1. Repository boundary
 
 The repository is a monorepo.
@@ -39,30 +39,29 @@ Services must not import the source code of other services.
 Forbidden:
 
 orders
-   X
-   ↓
+X
+↓
 users/src/*
 
 Allowed:
 
 orders
-   │
-   ├── HTTP
-   ├── gRPC
-   └── Event / Message
-           │
-           ▼
-         users
-4. Internal service boundary
+│
+├── HTTP
+├── gRPC
+└── Event / Message
+│
+▼
+users 4. Internal service boundary
 
 Inside a microservice, responsibilities follow:
 
 app
- ↓
+↓
 features
- ↓
+↓
 services
- ↓
+↓
 shared
 app
 
@@ -101,17 +100,16 @@ Local foundation of one microservice.
 shared must not depend on:
 
 features
-services
-5. Data boundary
+services 5. Data boundary
 
 Each microservice owns its data.
 
 auth
-  ↓
+↓
 Auth DB
 
 orders
-  ↓
+↓
 Orders DB
 
 A service must not directly read or modify another service's database.
@@ -119,20 +117,19 @@ A service must not directly read or modify another service's database.
 Forbidden:
 
 orders
-   X
-   ↓
+X
+↓
 users_db.users
 
 Correct:
 
 orders
-   │
-   ├── API
-   └── Events
-          │
-          ▼
-        users
-6. Contract boundary
+│
+├── API
+└── Events
+│
+▼
+users 6. Contract boundary
 
 Cross-service communication must use explicit contracts.
 
@@ -156,8 +153,8 @@ Packages must not depend on application source.
 Forbidden:
 
 packages/*
-    X
-    ↓
+X
+↓
 apps/*
 
 A package is a reusable library, not a microservice.
@@ -169,15 +166,15 @@ New architectural boundaries are introduced only when justified.
 Preferred evolution:
 
 local code
-   ↓
+↓
 real reuse appears
-   ↓
+↓
 workspace package
 
 feature
-   ↓
+↓
 autonomous capability
-   ↓
+↓
 microservice
 
 Do not create empty architectural structures in advance.

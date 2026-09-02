@@ -1,4 +1,3 @@
-
 Domain Integration Map
 Current state
 
@@ -7,38 +6,38 @@ The runtime integration graph is intentionally not implemented yet.
 At this stage we only define the intended form of communication.
 
 Capability A
-    │
-    ├── API
-    └── Event / Message
-          │
-          ▼
-      Capability B
+│
+├── API
+└── Event / Message
+│
+▼
+Capability B
 Forbidden integration
 
 Capabilities must not be coupled through internal source imports.
 
 Capability A
-     X
-     ↓
+X
+↓
 Capability B source code
 
 They must also not bypass ownership through direct database access.
 
 Capability A
-     X
-     ↓
+X
+↓
 Capability B database
 Candidate order lifecycle
 
 A future order lifecycle may involve several capabilities:
 
 Client
-  ↓
+↓
 Order Management
-  │
-  ├── Inventory
-  ├── Payments
-  └── Fulfillment
+│
+├── Inventory
+├── Payments
+└── Fulfillment
 
 This is only a conceptual hypothesis.
 

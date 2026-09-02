@@ -1,0 +1,12 @@
+# Stage 4 — Base Docker Compose for local development
+# Services extend this file. Do not modify this for per-service overrides.
+
+x-node-defaults: &node-defaults
+  restart: unless-stopped
+  networks:
+    - oms-network
+
+networks:
+  oms-network:
+    name: oms-network
+    driver: bridge

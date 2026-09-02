@@ -1,0 +1,37 @@
+# Stage 4 — Node.js base image for microservices
+# Multi-stage build: install all deps, then prune for production
+
+# ---------- Dependencies stage ----------
+FROM node:20.19.0-alpine AS deps
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json turbo.json ./
+
+# ---------- Build stage ----------
+FROM node:20.19.0-alpine AS build
+WORKDIR /app
+
+RUN npm install -g pnpm@10.15.0
+
+COPY --from=deps /app ./
+COPY . .
+
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
+
+# ---------- Production stage ----------
+FROM node:20.19.0-alpine AS production
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 appuser
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json ./
+
+USER appuser
+
+CMD ["node", "dist/index.js"]

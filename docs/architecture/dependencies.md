@@ -1,5 +1,5 @@
-
 Dependency Rules
+
 1. Three dependency graphs
 
 The system contains three different graphs.
@@ -9,7 +9,7 @@ Source graph
 Managed by PNPM:
 
 workspace
-   ↓
+↓
 package dependencies
 Task graph
 
@@ -37,7 +37,7 @@ These graphs must not be confused.
 The default direction is:
 
 apps
- ↓
+↓
 packages
 
 Packages must not depend on applications.
@@ -47,35 +47,34 @@ Packages must not depend on applications.
 Canonical direction:
 
 app
- ↓
+↓
 features
- ↓
+↓
 services
- ↓
+↓
 shared
 
 Allowed:
 
-From	Allowed
-app	features, services, shared
-features	services, shared
-services	shared
-shared	external libraries / own shared layer
+From Allowed
+app features, services, shared
+features services, shared
+services shared
+shared external libraries / own shared layer
 
 Forbidden:
 
-shared   → features
-shared   → services
-services → features
-4. Feature isolation
+shared → features
+shared → services
+services → features 4. Feature isolation
 
 Feature-to-feature dependencies are exceptional.
 
 Default rule:
 
 feature A
-    X
-    ↓
+X
+↓
 feature B
 
 If such dependency becomes permanent, reassess ownership and boundaries.
@@ -87,38 +86,36 @@ Microservices must communicate through explicit contracts.
 Forbidden:
 
 service A
-    X
-    ↓
+X
+↓
 service B source code
 
 Correct:
 
 service A
-    │
-    ├── API
-    └── Event / Message
-          │
-          ▼
-       service B
-6. Database dependency
+│
+├── API
+└── Event / Message
+│
+▼
+service B 6. Database dependency
 
 Forbidden:
 
 service A
-    X
-    ↓
+X
+↓
 service B database
 
 Correct:
 
 service A
-    │
-    ├── API
-    └── Event / Message
-          │
-          ▼
-       service B
-7. Public package API
+│
+├── API
+└── Event / Message
+│
+▼
+service B 7. Public package API
 
 Workspace packages must expose an explicit public boundary.
 
@@ -129,7 +126,7 @@ import { UserCreatedEvent } from '@repo/contracts';
 Avoid consumers depending on internal package paths.
 
 8. Forbidden architectural patterns
-Shared dumping ground
+   Shared dumping ground
 
 Do not create:
 
