@@ -1,24 +1,12 @@
-import * as http from 'node:http';
+import fastify from 'fastify';
+import type { FastifyInstance } from 'fastify';
 
-export interface App {
-  listen: (port: number, callback: () => void) => void;
-}
+export function createApp(): FastifyInstance {
+  const app = fastify();
 
-export function createApp(): App {
-  const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
-    const url = new URL(req.url || '', `http://${req.headers.host}`);
-    if (url.pathname === '/health') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ status: 'ok', service: 'order-service' }));
-      return;
-    }
-    res.writeHead(404);
-    res.end('Not Found');
+  app.get('/health', async () => {
+    return { status: 'ok', service: 'order-service' };
   });
 
-  return {
-    listen: (port: number, callback: () => void) => {
-      server.listen(port, callback);
-    },
-  };
+  return app;
 }
