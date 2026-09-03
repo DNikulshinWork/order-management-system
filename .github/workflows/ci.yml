@@ -14,6 +14,22 @@ jobs:
   quality:
     name: Quality Checks
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: order
+          POSTGRES_PASSWORD: order123
+          POSTGRES_DB: order_service
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +45,8 @@ jobs:
           cache: 'pnpm'
 
       - name: Create .env file
-        run: cp apps/order-service/.env.example apps/order-service/.env
+        run: |
+          echo "DATABASE_URL=postgresql://order:order123@localhost:5432/order_service?schema=public" > apps/order-service/.env
 
       - run: pnpm install --frozen-lockfile
 
@@ -45,9 +62,10 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # Тесты временно отключены (требуют PostgreSQL)
-      # - name: Test
-      #   run: pnpm test
+      - name: Test
+        run: pnpm test
+        env:
+          DATABASE_URL: postgresql://order:order123@localhost:5432/order_service?schema=public
 
       - name: Dependency boundary check
         run: pnpm depcruise
