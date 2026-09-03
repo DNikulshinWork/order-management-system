@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url указывается в prisma.config.ts
 }
 
 model Order {

@@ -1,15 +1,21 @@
+import type { Prisma } from '@prisma/client';
+
 export interface Order {
   id: string;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  items: {
-    productId: string;
-    quantity: number;
-    price: number;
-  }[];
+  items: Prisma.JsonValue;
   total: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type CreateOrderInput = Omit<Order, 'id' | 'status' | 'createdAt' | 'updatedAt'>;
-export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>;
+export interface CreateOrderInput {
+  items: Prisma.JsonValue;
+  total: number;
+}
+
+export interface UpdateOrderInput {
+  items?: Prisma.JsonValue;
+  status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  total?: number;
+}

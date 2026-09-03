@@ -4,20 +4,23 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build": "prisma generate && NODE_OPTIONS=--max-old-space-size=512 tsc -b",
+    "build": "NODE_OPTIONS=--max-old-space-size=512 tsc -b",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "fastify": "^4.28.0",
     "@prisma/client": "^7.10.0",
+    "fastify": "^4.28.0",
+    "pg": "^8.11.0",
     "prisma": "^7.10.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@prisma/config": "^7.10.0",
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.10.0",
+    "dotenv": "^17.4.2",
     "tsx": "^4.7.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vitest": "^3.2.0"
