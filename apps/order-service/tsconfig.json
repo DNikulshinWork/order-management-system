@@ -5,7 +5,10 @@
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/tsbuildinfo.json",
     "composite": true,
-    "types": ["node"] // явно подключаем типы Node.js
+    "types": ["node", "pg"],
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]

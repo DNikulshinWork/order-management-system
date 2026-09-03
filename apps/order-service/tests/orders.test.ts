@@ -31,7 +31,6 @@ describe('Orders API', () => {
   });
 
   it('should get all orders', async () => {
-    // Сначала создадим заказ
     await app.inject({
       method: 'POST',
       url: '/orders',
@@ -52,7 +51,6 @@ describe('Orders API', () => {
   });
 
   it('should get a single order by id', async () => {
-    // Создаём заказ
     const createResp = await app.inject({
       method: 'POST',
       url: '/orders',
@@ -113,7 +111,6 @@ describe('Orders API', () => {
     const body = response.json();
     expect(body.success).toBe(true);
 
-    // Проверяем, что заказ действительно удалён
     const getResp = await app.inject({
       method: 'GET',
       url: `/orders/${id}`,

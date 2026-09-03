@@ -11,7 +11,8 @@
     "typecheck": "pnpm tsc -b tsconfig.json",
     "format": "pnpm prettier . --write",
     "format:check": "pnpm prettier . --check",
-    "depcruise": "depcruise --config .dependency-cruiser.cjs apps packages"
+    "depcruise": "depcruise --config .dependency-cruiser.cjs apps packages",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -21,6 +22,8 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "dependency-cruiser": "^16.10.0",
     "eslint": "^10.9.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
     "turbo": "^2.5.6",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
@@ -29,5 +32,14 @@
   },
   "engines": {
     "node": ">=20.19.0"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}": [
+      "pnpm eslint --fix",
+      "pnpm prettier --write"
+    ],
+    "*.{json,yaml,yml,md}": [
+      "pnpm prettier --write"
+    ]
   }
 }

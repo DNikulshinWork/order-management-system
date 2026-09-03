@@ -10,12 +10,12 @@ export interface Order {
 }
 
 export interface CreateOrderInput {
-  items: Prisma.JsonValue;
+  items: Prisma.InputJsonValue;
   total: number;
 }
 
 export interface UpdateOrderInput {
-  items?: Prisma.JsonValue;
+  items?: Prisma.InputJsonValue;
   status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
   total?: number;
 }
