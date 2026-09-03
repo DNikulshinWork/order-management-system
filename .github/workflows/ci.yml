@@ -47,6 +47,7 @@ jobs:
       - name: Create .env file
         run: |
           echo "DATABASE_URL=postgresql://order:order123@localhost:5432/order_service?schema=public" > apps/order-service/.env
+          cat apps/order-service/.env
 
       - run: pnpm install --frozen-lockfile
 
@@ -62,10 +63,17 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U order; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
       - name: Run Prisma migrations
         run: |
           cd apps/order-service
-          npx prisma migrate deploy
+          npx prisma migrate deploy --verbose
           cd ../..
         env:
           DATABASE_URL: postgresql://order:order123@localhost:5432/order_service?schema=public
@@ -74,6 +82,7 @@ jobs:
         run: pnpm test
         env:
           DATABASE_URL: postgresql://order:order123@localhost:5432/order_service?schema=public
+          NODE_OPTIONS: --max-old-space-size=512
 
       - name: Dependency boundary check
         run: pnpm depcruise

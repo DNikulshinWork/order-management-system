@@ -6,6 +6,7 @@ describe('Orders API', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
+    console.log('DATABASE_URL:', process.env.DATABASE_URL || 'NOT SET');
     app = createApp();
     await app.ready();
   });
