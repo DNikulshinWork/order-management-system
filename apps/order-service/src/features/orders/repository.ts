@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 import type { Prisma, Order as PrismaOrder } from '@prisma/client';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 
-// Явно передаём DATABASE_URL в конструктор
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 export async function createOrder(input: CreateOrderInput): Promise<PrismaOrder> {
   const order = await prisma.order.create({
