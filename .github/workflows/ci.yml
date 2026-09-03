@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '20.19.0'
+  NODE_VERSION: '24'
   PNPM_VERSION: '10.15.0'
 
 jobs:
@@ -17,10 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 1. СНАЧАЛА устанавливаем pnpm (чтобы он был в PATH для setup-node)
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      # 2. ПОТОМ устанавливаем Node.js с кешированием pnpm
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
