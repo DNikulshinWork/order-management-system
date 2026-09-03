@@ -14,9 +14,7 @@ export async function createOrder(input: CreateOrderInput): Promise<PrismaOrder>
 
 export async function getOrders(): Promise<PrismaOrder[]> {
   const prisma = getPrisma();
-  return prisma.order.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  return prisma.order.findMany({ orderBy: { createdAt: 'desc' } });
 }
 
 export async function getOrderById(id: string): Promise<PrismaOrder | null> {
@@ -37,10 +35,7 @@ export async function updateOrder(
   if (input.items !== undefined) data.items = input.items as Prisma.InputJsonValue;
   if (input.total !== undefined) data.total = input.total;
 
-  return prisma.order.update({
-    where: { id },
-    data,
-  });
+  return prisma.order.update({ where: { id }, data });
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {

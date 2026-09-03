@@ -29,5 +29,4 @@ app.listen({ port, host }, (err) => {
     process.exit(1);
   }
   console.log(`Order Service running on http://${host}:${port}`);
-  console.log(`DATABASE_URL set: ${Boolean(process.env.DATABASE_URL)}`);
 });
