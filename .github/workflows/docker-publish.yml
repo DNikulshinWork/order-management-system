@@ -15,6 +15,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/order-service
+  # Prisma 7 config requires DATABASE_URL even for `prisma generate` (no real DB needed)
+  DATABASE_URL: postgresql://order:order@127.0.0.1:5432/orders?schema=public
 
 jobs:
   build-and-push:
