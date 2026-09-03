@@ -4,4 +4,6 @@ packages:
   - tooling/*
 
 ignoredBuiltDependencies:
+  - '@prisma/engines'
   - esbuild
+  - prisma

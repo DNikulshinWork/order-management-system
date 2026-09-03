@@ -1,9 +1,10 @@
 services:
   order-service:
-    image: ghcr.io/dnikulshinwork/order-management-system/order-service:latest
+    image: order-service:local
     container_name: order-service
+    pull_policy: never
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -26,7 +27,7 @@ services:
       POSTGRES_PASSWORD: order123
       POSTGRES_DB: order_service
     ports:
-      - '5432:5432'
+      - "5432:5432"
     networks:
       - oms-network
     volumes:
