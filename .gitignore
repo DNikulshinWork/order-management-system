@@ -39,3 +39,4 @@ apps/*/tests/**/*.d.ts
 apps/*/tests/**/*.js
 apps/*/tests/**/*.js.map
 apps/order-service/src/generated/
+apps/order-service/.env
