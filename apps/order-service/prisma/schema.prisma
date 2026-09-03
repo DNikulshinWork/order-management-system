@@ -6,13 +6,21 @@ datasource db {
   provider = "postgresql"
 }
 
+enum OrderStatus {
+  pending
+  confirmed
+  shipped
+  delivered
+  cancelled
+}
+
 model Order {
-  id        String   @id @default(uuid())
-  status    String   @default("pending")
+  id        String      @id @default(uuid())
+  status    OrderStatus @default(pending)
   items     Json
   total     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   @@index([status])
   @@index([createdAt])

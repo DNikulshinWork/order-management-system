@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createApp } from '../src/app.js';
+import { disconnectPrisma } from '../src/shared/prisma.js';
 import type { FastifyInstance } from 'fastify';
 
 describe('Orders API', () => {
@@ -14,6 +15,7 @@ describe('Orders API', () => {
 
   afterAll(async () => {
     await app.close();
+    await disconnectPrisma();
   });
 
   it('should create an order', async () => {

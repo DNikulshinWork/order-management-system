@@ -1,30 +1,26 @@
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
 import type { Prisma, Order as PrismaOrder } from '@prisma/client';
+import { getPrisma } from '../../shared/prisma.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
-
 export async function createOrder(input: CreateOrderInput): Promise<PrismaOrder> {
-  const order = await prisma.order.create({
+  const prisma = getPrisma();
+  return prisma.order.create({
     data: {
       items: input.items as Prisma.InputJsonValue,
       total: input.total,
     },
   });
-  return order;
 }
 
 export async function getOrders(): Promise<PrismaOrder[]> {
-  return prisma.order.findMany();
+  const prisma = getPrisma();
+  return prisma.order.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
 }
 
 export async function getOrderById(id: string): Promise<PrismaOrder | null> {
+  const prisma = getPrisma();
   return prisma.order.findUnique({ where: { id } });
 }
 
@@ -32,6 +28,7 @@ export async function updateOrder(
   id: string,
   input: UpdateOrderInput,
 ): Promise<PrismaOrder | null> {
+  const prisma = getPrisma();
   const existing = await prisma.order.findUnique({ where: { id } });
   if (!existing) return null;
 
@@ -47,6 +44,7 @@ export async function updateOrder(
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {
+  const prisma = getPrisma();
   const existing = await prisma.order.findUnique({ where: { id } });
   if (!existing) return false;
   await prisma.order.delete({ where: { id } });
