@@ -6,85 +6,100 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  NODE_VERSION: '24'                # Обновлено с 20 на 24
-  PNPM_VERSION: '10.15.0'
-
 jobs:
   quality:
-    name: Quality Checks
+    name: Lint, typecheck, test
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:16-alpine
         env:
           POSTGRES_USER: order
-          POSTGRES_PASSWORD: order123
-          POSTGRES_DB: order_service
+          POSTGRES_PASSWORD: order
+          POSTGRES_DB: orders
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
+          --health-cmd "pg_isready -U order -d orders"
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 5
-
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # 1️⃣ СНАЧАЛА устанавливаем pnpm
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 10.15.0
 
-      # 2️⃣ ПОТОМ Node.js с кешированием pnpm
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          node-version: 20.19.0
+          cache: pnpm
 
-      - name: Create .env file
-        run: |
-          echo "DATABASE_URL=postgresql://order:order123@localhost:5432/order_service?schema=public" > apps/order-service/.env
-          cat apps/order-service/.env
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - run: pnpm install --frozen-lockfile
+      - name: Generate Prisma Client
+        run: pnpm --filter @repo/order-service exec prisma generate
 
-      - name: Format check
-        run: pnpm format:check
+      - name: Apply migrations
+        run: pnpm --filter @repo/order-service exec prisma migrate deploy
 
       - name: Lint
         run: pnpm lint
 
-      - name: Type check
+      - name: Typecheck
         run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
-
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h localhost -p 5432 -U order; do
-            echo "Waiting for PostgreSQL..."
-            sleep 2
-          done
-
-      - name: Run Prisma migrations
-        run: |
-          cd apps/order-service
-          npx prisma migrate deploy
-          cd ../..
-        env:
-          DATABASE_URL: postgresql://order:order123@localhost:5432/order_service?schema=public
 
       - name: Test
         run: pnpm test
-        env:
-          DATABASE_URL: postgresql://order:order123@localhost:5432/order_service?schema=public
-          NODE_OPTIONS: --max-old-space-size=512
 
-      - name: Dependency boundary check
-        run: pnpm depcruise
+  docker-build-and-push:
+    name: Build & push Docker image
+    needs: quality
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}/order-service
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/order-service/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
