@@ -4,7 +4,6 @@ build/
 .turbo/
 coverage/
 .git/
-.github/
 infrastructure/
 .dependency-cruiser.cjs
 .npmrc

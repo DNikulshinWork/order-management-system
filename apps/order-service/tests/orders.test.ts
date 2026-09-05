@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { createApp } from '../src/app.js';
+import { createApp } from '../src/app/create-app.js';
 import { disconnectPrisma } from '../src/shared/prisma.js';
 import type { FastifyInstance } from 'fastify';
 

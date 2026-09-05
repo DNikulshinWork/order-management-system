@@ -40,3 +40,12 @@ apps/*/tests/**/*.js
 apps/*/tests/**/*.js.map
 apps/order-service/src/generated/
 apps/order-service/.env
+
+# AI-агенты (локальные конфиги, не часть кодовой базы)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Любые repomix-дампы, не только repomix-output*.md
+repomix-*.md

@@ -1,6 +1,22 @@
+import { OrderStatus } from '@prisma/client';
 import type { FastifyInstance } from 'fastify';
+import { NotFoundError } from '../../shared/errors.js';
 import * as repository from './repository.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
+
+// Единственный источник правды для допустимых статусов — сгенерированный
+// Prisma enum. JSON Schema и TS-тип (types.ts) теперь не могут разойтись.
+const orderStatusValues = Object.values(OrderStatus);
+
+const orderItemSchema = {
+  type: 'object',
+  required: ['productId', 'quantity', 'price'],
+  properties: {
+    productId: { type: 'string', minLength: 1 },
+    quantity: { type: 'number', minimum: 1 },
+    price: { type: 'number', minimum: 0 },
+  },
+} as const;
 
 const createOrderSchema = {
   body: {
@@ -10,15 +26,7 @@ const createOrderSchema = {
       items: {
         type: 'array',
         minItems: 1,
-        items: {
-          type: 'object',
-          required: ['productId', 'quantity', 'price'],
-          properties: {
-            productId: { type: 'string', minLength: 1 },
-            quantity: { type: 'number', minimum: 1 },
-            price: { type: 'number', minimum: 0 },
-          },
-        },
+        items: orderItemSchema,
       },
       total: { type: 'number', minimum: 0 },
     },
@@ -32,31 +40,17 @@ const updateOrderSchema = {
     properties: {
       status: {
         type: 'string',
-        enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+        enum: orderStatusValues,
       },
       items: {
         type: 'array',
         minItems: 1,
-        items: {
-          type: 'object',
-          required: ['productId', 'quantity', 'price'],
-          properties: {
-            productId: { type: 'string', minLength: 1 },
-            quantity: { type: 'number', minimum: 1 },
-            price: { type: 'number', minimum: 0 },
-          },
-        },
+        items: orderItemSchema,
       },
       total: { type: 'number', minimum: 0 },
     },
   },
 };
-
-function notFound(message = 'Order not found'): Error & { statusCode: number } {
-  const err = new Error(message) as Error & { statusCode: number };
-  err.statusCode = 404;
-  return err;
-}
 
 export async function ordersRoutes(app: FastifyInstance) {
   app.get('/orders', async () => {
@@ -67,7 +61,7 @@ export async function ordersRoutes(app: FastifyInstance) {
     const { id } = request.params as { id: string };
     const order = await repository.getOrderById(id);
     if (!order) {
-      throw notFound();
+      throw new NotFoundError('Order not found');
     }
     return order;
   });
@@ -82,7 +76,7 @@ export async function ordersRoutes(app: FastifyInstance) {
     const input = request.body as UpdateOrderInput;
     const updated = await repository.updateOrder(id, input);
     if (!updated) {
-      throw notFound();
+      throw new NotFoundError('Order not found');
     }
     return updated;
   });
@@ -91,7 +85,7 @@ export async function ordersRoutes(app: FastifyInstance) {
     const { id } = request.params as { id: string };
     const deleted = await repository.deleteOrder(id);
     if (!deleted) {
-      throw notFound();
+      throw new NotFoundError('Order not found');
     }
     return { success: true };
   });

@@ -1,13 +1,12 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma, Order as PrismaOrder, OrderStatus } from '@prisma/client';
 
-export interface Order {
-  id: string;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  items: Prisma.JsonValue;
-  total: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Единственный источник правды по статусам — enum из schema.prisma.
+// Ручного union-типа больше нет: он неизбежно расходился бы с БД при первом же
+// изменении enum. Тип и рантайм-значения (см. routes.ts) теперь берутся из
+// сгенерированного Prisma Client.
+export type { OrderStatus };
+
+export type Order = PrismaOrder;
 
 export interface CreateOrderInput {
   items: Prisma.InputJsonValue;
@@ -16,6 +15,6 @@ export interface CreateOrderInput {
 
 export interface UpdateOrderInput {
   items?: Prisma.InputJsonValue;
-  status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status?: OrderStatus;
   total?: number;
 }

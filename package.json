@@ -12,7 +12,8 @@
     "format": "pnpm prettier . --write",
     "format:check": "pnpm prettier . --check",
     "depcruise": "depcruise --config .dependency-cruiser.cjs apps packages",
-    "prepare": "husky"
+    "prepare": "husky",
+    "repomix": "pnpm dlx repomix --style markdown"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
