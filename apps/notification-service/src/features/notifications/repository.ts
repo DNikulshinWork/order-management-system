@@ -1,20 +1,10 @@
-import type {
-  Prisma,
-  NotificationStatus,
-  Notification as PrismaNotification,
-} from '@prisma/client';
+import { Prisma, NotificationStatus, Notification } from '../generated/prisma/client';
 import { getPrisma } from '../../shared/prisma.js';
-import type {
-  CreateNotificationInput,
-  UpdateStatusInput,
-  PaginatedNotificationsResponse,
-} from './types.js';
+import type { CreateNotificationInput, PaginatedNotificationsResponse } from './types.js';
 
-export async function createNotification(
-  input: CreateNotificationInput,
-): Promise<PrismaNotification> {
+export async function createNotification(input: CreateNotificationInput): Promise<Notification> {
   const prisma = getPrisma();
-  return prisma.Notification.create({
+  return prisma.notification.create({
     data: {
       recipient: input.recipient,
       type: input.type,
@@ -30,60 +20,52 @@ export async function getNotificationsPaginated(
   status?: NotificationStatus,
 ): Promise<PaginatedNotificationsResponse> {
   const prisma = getPrisma();
+  const take = limit;
 
-  const where: Prisma.NotificationWhereInput = {};
-  if (status) {
-    where.status = status;
-  }
+  const where = status ? { status } : {};
 
-  const args: Prisma.NotificationFindManyArgs = {
+  const results = await prisma.notification.findMany({
     where,
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-    take: limit + 1,
-  };
+    take: take + 1,
+    cursor: cursor ? { id: cursor } : undefined,
+    skip: cursor ? 1 : 0,
+  });
 
-  if (cursor) {
-    args.cursor = { id: cursor };
-    args.skip = 1;
+  let nextCursor: string | undefined;
+
+  if (results.length > take) {
+    const nextItem = results.pop()!;
+    nextCursor = nextItem.id;
+    return { notifications: results, nextCursor };
   }
 
-  const raw = await prisma.Notification.findMany(args);
-
-  const hasMore = raw.length > limit;
-  const notifications = hasMore ? raw.slice(0, limit) : raw;
-  const nextCursor = hasMore ? notifications[notifications.length - 1]!.id : undefined;
-
-  const result: PaginatedNotificationsResponse = { notifications };
-  if (nextCursor) {
-    result.nextCursor = nextCursor;
-  }
-
-  return result;
+  return { notifications: results };
 }
 
-export async function getNotificationById(id: string): Promise<PrismaNotification | null> {
+export async function getNotificationById(id: string): Promise<Notification | null> {
   const prisma = getPrisma();
-  return prisma.Notification.findUnique({ where: { id } });
+  return prisma.notification.findUnique({ where: { id } });
 }
 
 export async function updateNotificationStatus(
   id: string,
-  input: UpdateStatusInput,
-): Promise<PrismaNotification | null> {
+  status: NotificationStatus,
+): Promise<Notification | null> {
   const prisma = getPrisma();
-  const existing = await prisma.Notification.findUnique({ where: { id } });
+  const existing = await prisma.notification.findUnique({ where: { id } });
   if (!existing) return null;
 
-  return prisma.Notification.update({
+  return prisma.notification.update({
     where: { id },
-    data: { status: input.status },
+    data: { status },
   });
 }
 
 export async function deleteNotification(id: string): Promise<boolean> {
   const prisma = getPrisma();
-  const existing = await prisma.Notification.findUnique({ where: { id } });
+  const existing = await prisma.notification.findUnique({ where: { id } });
   if (!existing) return false;
-  await prisma.Notification.delete({ where: { id } });
+  await prisma.notification.delete({ where: { id } });
   return true;
 }

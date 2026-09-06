@@ -3,11 +3,10 @@ import type {
   Notification as PrismaNotification,
   NotificationStatus,
   NotificationChannel,
-} from '@prisma/client';
-
-export type { NotificationStatus, NotificationChannel };
+} from '../generated/prisma/client';
 
 export type Notification = PrismaNotification;
+export type { NotificationStatus, NotificationChannel };
 
 export interface CreateNotificationInput {
   recipient: string;
