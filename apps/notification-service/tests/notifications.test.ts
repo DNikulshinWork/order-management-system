@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { createApp } from '@app/create-app.js';
-import { getPrisma, disconnectPrisma } from '@shared/prisma.js';
+import { getPrisma, disconnectPrisma } from '@shared/prisma';
 import type { FastifyInstance } from 'fastify';
 
 describe('Notifications API', () => {
@@ -150,36 +150,47 @@ describe('Notifications API', () => {
   });
 
   it('should paginate notifications with cursor', async () => {
-    for (let i = 0; i < 25; i++) {
+    const total = 25;
+    const limit = 20;
+
+    // Создаём total записей
+    for (let i = 0; i < total; i++) {
       await app.inject({
         method: 'POST',
         url: '/notifications',
         payload: {
-          recipient: 'paginated-user-' + i + '@example.com',
-          type: 'bulk',
+          recipient: `test${i}@example.com`,
+          type: 'test',
           channel: 'email',
-          content: { subject: 'Message ' + i, body: 'Test' },
+          content: { message: `Test ${i}` },
         },
       });
     }
 
+    // Проверяем, что в БД действительно total записей
+    const count = await getPrisma().notification.count();
+    expect(count).toBe(total);
+
+    // Первая страница
     const page1Resp = await app.inject({
       method: 'GET',
-      url: '/notifications?limit=20',
+      url: `/notifications?limit=${limit}`,
     });
     expect(page1Resp.statusCode).toBe(200);
     const page1 = page1Resp.json();
-    expect(page1.notifications.length).toBe(20);
+    expect(page1.notifications.length).toBe(limit);
     expect(page1).toHaveProperty('nextCursor');
-    expect(typeof page1.nextCursor).toBe('string');
+    const cursor = page1.nextCursor;
 
+    // Вторая страница
     const page2Resp = await app.inject({
       method: 'GET',
-      url: '/notifications?limit=20&cursor=' + page1.nextCursor,
+      url: `/notifications?limit=${limit}&cursor=${cursor}`,
     });
     expect(page2Resp.statusCode).toBe(200);
     const page2 = page2Resp.json();
-    expect(page2.notifications.length).toBe(5);
+    const expectedRemaining = total - limit;
+    expect(page2.notifications.length).toBe(expectedRemaining);
     expect(page2).not.toHaveProperty('nextCursor');
   });
 

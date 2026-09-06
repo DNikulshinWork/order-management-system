@@ -21,23 +21,24 @@ export async function getNotificationsPaginated(
   status?: NotificationStatus,
 ): Promise<PaginatedNotificationsResponse> {
   const prisma = getPrisma();
-  const take = limit;
 
   const where = status ? { status } : {};
 
   const results = await prisma.notification.findMany({
     where,
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-    take: take + 1,
+    take: limit + 1,
     ...(cursor ? { cursor: { id: cursor } } : {}),
     skip: cursor ? 1 : 0,
   });
 
-  const response: PaginatedNotificationsResponse = { notifications: results };
+  const hasMore = results.length > limit;
+  const notifications = hasMore ? results.slice(0, limit) : results;
+  const nextCursor = hasMore ? notifications[notifications.length - 1]!.id : undefined;
 
-  if (results.length > take) {
-    const nextItem = results.pop()!;
-    response.nextCursor = nextItem.id;
+  const response: PaginatedNotificationsResponse = { notifications };
+  if (nextCursor) {
+    response.nextCursor = nextCursor;
   }
 
   return response;
