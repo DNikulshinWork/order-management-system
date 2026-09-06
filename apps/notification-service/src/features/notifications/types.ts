@@ -3,7 +3,7 @@ import type {
   Notification as PrismaNotification,
   NotificationStatus,
   NotificationChannel,
-} from '../generated/prisma/client';
+} from '../generated/prisma/client/index.js';
 
 export type Notification = PrismaNotification;
 export type { NotificationStatus, NotificationChannel };

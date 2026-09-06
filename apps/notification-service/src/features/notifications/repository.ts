@@ -1,4 +1,4 @@
-import { Prisma, NotificationStatus, Notification } from '../generated/prisma/client';
+import { Prisma, NotificationStatus, Notification } from '../generated/prisma/client/index.js';
 import { getPrisma } from '../../shared/prisma.js';
 import type { CreateNotificationInput, PaginatedNotificationsResponse } from './types.js';
 
@@ -28,7 +28,7 @@ export async function getNotificationsPaginated(
     where,
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     take: take + 1,
-    cursor: cursor ? { id: cursor } : undefined,
+    ...(cursor ? { cursor: { id: cursor } } : {}),
     skip: cursor ? 1 : 0,
   });
 
