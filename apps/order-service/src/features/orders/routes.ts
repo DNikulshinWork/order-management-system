@@ -1,21 +1,9 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../shared/enums.js';
 import type { FastifyInstance } from 'fastify';
 import { NotFoundError } from '../../shared/errors.js';
 import * as repository from './repository.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 
-const getOrdersSchema = {
-  querystring: {
-    type: 'object',
-    properties: {
-      limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
-      cursor: { type: 'string', minLength: 1 },
-    },
-  },
-} as const;
-
-// Единственный источник правды для допустимых статусов — сгенерированный
-// Prisma enum. JSON Schema и TS-тип (types.ts) теперь не могут разойтись.
 const orderStatusValues = Object.values(OrderStatus);
 
 const orderItemSchema = {
@@ -48,10 +36,7 @@ const updateOrderSchema = {
     type: 'object',
     additionalProperties: false,
     properties: {
-      status: {
-        type: 'string',
-        enum: orderStatusValues,
-      },
+      status: { type: 'string', enum: orderStatusValues },
       items: {
         type: 'array',
         minItems: 1,
@@ -62,15 +47,24 @@ const updateOrderSchema = {
   },
 };
 
-export async function ordersRoutes(app: FastifyInstance) {
-  app.get<{ Querystring: { limit: number; cursor?: string } }>(
-    '/orders',
-    { schema: getOrdersSchema },
-    async (request) => {
-      const { limit, cursor } = request.query;
-      return repository.getOrdersPaginated(limit, cursor);
+const getOrdersQuerySchema = {
+  querystring: {
+    type: 'object',
+    properties: {
+      limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+      cursor: { type: 'string', minLength: 1 },
     },
-  );
+    additionalProperties: false,
+  },
+};
+
+export async function ordersRoutes(app: FastifyInstance) {
+  app.get('/orders', { schema: getOrdersQuerySchema }, async (request) => {
+    const query = request.query as { limit?: number; cursor?: string };
+    const limit = query.limit ?? 20;
+    const cursor = query.cursor;
+    return repository.getOrdersPaginated(limit, cursor);
+  });
 
   app.get('/orders/:id', async (request) => {
     const { id } = request.params as { id: string };

@@ -19,30 +19,23 @@ describe('API Gateway App', () => {
     expect(response.json()).toEqual({ status: 'ok', service: 'api-gateway' });
   });
 
-  it('GET /api/notifications should return 503', async () => {
+  it('GET /api/notifications should return upstream error (no notification-service)', async () => {
     const app = createApp();
     const response = await app.inject({
       method: 'GET',
       url: '/api/notifications',
     });
-    expect(response.statusCode).toBe(503);
-    expect(response.json()).toEqual({
-      error: 'Service Unavailable',
-      message: 'Service not available',
-    });
+    // Since notification-service is not running, proxy will fail with 502/500
+    expect([500, 502, 503, 504]).toContain(response.statusCode);
   });
 
-  it('POST /api/notifications/some/path should return 503', async () => {
+  it('POST /api/notifications/some/path should return upstream error (no notification-service)', async () => {
     const app = createApp();
     const response = await app.inject({
       method: 'POST',
       url: '/api/notifications/some/path',
     });
-    expect(response.statusCode).toBe(503);
-    expect(response.json()).toEqual({
-      error: 'Service Unavailable',
-      message: 'Service not available',
-    });
+    expect([500, 502, 503, 504]).toContain(response.statusCode);
   });
 
   it('GET /unknown should return 404', async () => {

@@ -24,6 +24,19 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
+      notifications-db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: notification
+          POSTGRES_PASSWORD: notification
+          POSTGRES_DB: notifications
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U notification -d notifications"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
       DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
     steps:
@@ -44,11 +57,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
+      - name: Generate Prisma Client (order-service)
         run: pnpm --filter @repo/order-service exec prisma generate
 
-      - name: Apply migrations
+      - name: Apply migrations (order-service)
         run: pnpm --filter @repo/order-service exec prisma migrate deploy
+
+      - name: Generate Prisma Client (notification-service)
+        run: pnpm --filter @repo/notification-service exec prisma generate
+        env:
+          DATABASE_URL: postgresql://notification:notification@localhost:5433/notifications?schema=public
+
+      - name: Apply migrations (notification-service)
+        run: pnpm --filter @repo/notification-service exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://notification:notification@localhost:5433/notifications?schema=public
 
       - name: Check formatting
         run: pnpm format:check
@@ -77,3 +100,11 @@ jobs:
       # Explicit test for api-gateway (verifies its test script works independently)
       - name: Test API Gateway
         run: pnpm --filter @repo/api-gateway test
+        env:
+          DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
+
+      # Explicit test for notification-service (verifies its test script works independently)
+      - name: Test Notification Service
+        run: pnpm --filter @repo/notification-service test
+        env:
+          DATABASE_URL: postgresql://notification:notification@localhost:5433/notifications?schema=public

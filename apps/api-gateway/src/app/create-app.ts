@@ -43,6 +43,8 @@ function buildLoggerOptions(): NonNullable<FastifyServerOptions['logger']> {
  */
 export function createApp(): FastifyInstance {
   const orderServiceUrl = process.env.ORDER_SERVICE_URL ?? 'http://order-service:3000';
+  const notificationServiceUrl =
+    process.env.NOTIFICATION_SERVICE_URL ?? 'http://notification-service:3001';
 
   const app = fastify({
     logger: buildLoggerOptions(),
@@ -65,17 +67,14 @@ export function createApp(): FastifyInstance {
     },
   });
 
-  // ── Заглушка для /api/notifications ──────────────────────────
-  app.all('/api/notifications', async (_request, reply) => {
-    return reply
-      .status(503)
-      .send({ error: 'Service Unavailable', message: 'Service not available' });
-  });
-
-  app.all('/api/notifications/*', async (_request, reply) => {
-    return reply
-      .status(503)
-      .send({ error: 'Service Unavailable', message: 'Service not available' });
+  // ── Proxy: /api/notifications → notification-service:3001/notifications ──
+  app.register(proxy, {
+    upstream: notificationServiceUrl,
+    prefix: '/api/notifications',
+    rewritePrefix: '/notifications',
+    preHandler: async (_request, reply) => {
+      reply.header('x-proxied-by', 'api-gateway');
+    },
   });
 
   // ── Глобальный хук: логирование каждого запроса ──────────────

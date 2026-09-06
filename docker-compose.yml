@@ -15,6 +15,22 @@ services:
       timeout: 5s
       retries: 10
 
+  notifications-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: notification
+      POSTGRES_PASSWORD: notification
+      POSTGRES_DB: notifications
+    ports:
+      - '5433:5432'
+    volumes:
+      - notification_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U notification -d notifications']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   order-service:
     build:
       context: .
@@ -30,6 +46,21 @@ services:
       postgres:
         condition: service_healthy
 
+  notification-service:
+    build:
+      context: .
+      dockerfile: apps/notification-service/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://notification:notification@notifications-db:5432/notifications?schema=public
+      PORT: 3001
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    ports:
+      - '3001:3001'
+    depends_on:
+      notifications-db:
+        condition: service_healthy
+
   api-gateway:
     build:
       context: .
@@ -39,10 +70,13 @@ services:
       HOST: 0.0.0.0
       NODE_ENV: production
       ORDER_SERVICE_URL: http://order-service:3000
+      NOTIFICATION_SERVICE_URL: http://notification-service:3001
     ports:
       - '8000:8000'
     depends_on:
       - order-service
+      - notification-service
 
 volumes:
   order_pg_data:
+  notification_pg_data:

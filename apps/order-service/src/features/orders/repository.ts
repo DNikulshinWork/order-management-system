@@ -4,7 +4,7 @@ import type { CreateOrderInput, UpdateOrderInput, PaginatedOrdersResponse } from
 
 export async function createOrder(input: CreateOrderInput): Promise<PrismaOrder> {
   const prisma = getPrisma();
-  return prisma.order.create({
+  return prisma.Order.create({
     data: {
       items: input.items as Prisma.InputJsonValue,
       total: input.total,
@@ -18,7 +18,7 @@ export async function getOrdersPaginated(
 ): Promise<PaginatedOrdersResponse> {
   const prisma = getPrisma();
 
-  const args: Parameters<typeof prisma.order.findMany>[0] = {
+  const args: Parameters<typeof prisma.Order.findMany>[0] = {
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     take: limit + 1,
   };
@@ -28,7 +28,7 @@ export async function getOrdersPaginated(
     args.skip = 1;
   }
 
-  const raw = await prisma.order.findMany(args);
+  const raw = await prisma.Order.findMany(args);
 
   const hasMore = raw.length > limit;
   const orders = hasMore ? raw.slice(0, limit) : raw;
@@ -44,7 +44,7 @@ export async function getOrdersPaginated(
 
 export async function getOrderById(id: string): Promise<PrismaOrder | null> {
   const prisma = getPrisma();
-  return prisma.order.findUnique({ where: { id } });
+  return prisma.Order.findUnique({ where: { id } });
 }
 
 export async function updateOrder(
@@ -52,7 +52,7 @@ export async function updateOrder(
   input: UpdateOrderInput,
 ): Promise<PrismaOrder | null> {
   const prisma = getPrisma();
-  const existing = await prisma.order.findUnique({ where: { id } });
+  const existing = await prisma.Order.findUnique({ where: { id } });
   if (!existing) return null;
 
   const data: Prisma.OrderUpdateInput = {};
@@ -60,13 +60,13 @@ export async function updateOrder(
   if (input.items !== undefined) data.items = input.items as Prisma.InputJsonValue;
   if (input.total !== undefined) data.total = input.total;
 
-  return prisma.order.update({ where: { id }, data });
+  return prisma.Order.update({ where: { id }, data });
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {
   const prisma = getPrisma();
-  const existing = await prisma.order.findUnique({ where: { id } });
+  const existing = await prisma.Order.findUnique({ where: { id } });
   if (!existing) return false;
-  await prisma.order.delete({ where: { id } });
+  await prisma.Order.delete({ where: { id } });
   return true;
 }

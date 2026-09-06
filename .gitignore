@@ -49,3 +49,4 @@ skills-lock.json
 
 # Любые repomix-дампы, не только repomix-output*.md
 repomix-*.md
+apps/*/src/generated/
