@@ -37,8 +37,6 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
-    env:
-      DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +60,8 @@ jobs:
 
       - name: Apply migrations (order-service)
         run: pnpm --filter @repo/order-service exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
 
       - name: Generate Prisma Client (notification-service)
         run: pnpm --filter @repo/notification-service exec prisma generate
@@ -94,17 +94,16 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test (all packages via turbo)
-        run: pnpm test
-
-      # Explicit test for api-gateway (verifies its test script works independently)
-      - name: Test API Gateway
-        run: pnpm --filter @repo/api-gateway test
+      - name: Test order-service
+        run: pnpm --filter @repo/order-service test
         env:
           DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
 
-      # Explicit test for notification-service (verifies its test script works independently)
-      - name: Test Notification Service
+      - name: Test notification-service
         run: pnpm --filter @repo/notification-service test
         env:
           DATABASE_URL: postgresql://notification:notification@localhost:5433/notifications?schema=public
+
+      - name: Test api-gateway
+        run: pnpm --filter @repo/api-gateway test
+        # api-gateway не требует БД
