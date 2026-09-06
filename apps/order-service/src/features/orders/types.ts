@@ -18,3 +18,8 @@ export interface UpdateOrderInput {
   status?: OrderStatus;
   total?: number;
 }
+
+export interface PaginatedOrdersResponse {
+  orders: Order[];
+  nextCursor?: string;
+}

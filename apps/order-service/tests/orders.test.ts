@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { createApp } from '../src/app/create-app.js';
-import { disconnectPrisma } from '../src/shared/prisma.js';
+import { getPrisma, disconnectPrisma } from '../src/shared/prisma.js';
 import type { FastifyInstance } from 'fastify';
 
 describe('Orders API', () => {
@@ -11,6 +11,10 @@ describe('Orders API', () => {
     console.log('DATABASE_URL:', process.env.DATABASE_URL || 'NOT SET');
     app = createApp();
     await app.ready();
+  });
+
+  beforeEach(async () => {
+    await getPrisma().order.deleteMany();
   });
 
   afterAll(async () => {
@@ -50,8 +54,9 @@ describe('Orders API', () => {
     });
     expect(response.statusCode).toBe(200);
     const body = response.json();
-    expect(Array.isArray(body)).toBe(true);
-    expect(body.length).toBeGreaterThan(0);
+    expect(body).toHaveProperty('orders');
+    expect(Array.isArray(body.orders)).toBe(true);
+    expect(body.orders.length).toBeGreaterThan(0);
   });
 
   it('should get a single order by id', async () => {
@@ -130,5 +135,42 @@ describe('Orders API', () => {
     expect(response.statusCode).toBe(404);
     const body = response.json();
     expect(body.message).toBe('Order not found');
+  });
+
+  it('should paginate orders with cursor', async () => {
+    // Create 25 orders
+    const createdIds: string[] = [];
+    for (let i = 0; i < 25; i++) {
+      const resp = await app.inject({
+        method: 'POST',
+        url: '/orders',
+        payload: {
+          items: [{ productId: `p-pag-${i}`, quantity: 1, price: 10 }],
+          total: 10,
+        },
+      });
+      createdIds.push(resp.json().id);
+    }
+
+    // First page: limit=20
+    const page1Resp = await app.inject({
+      method: 'GET',
+      url: '/orders?limit=20',
+    });
+    expect(page1Resp.statusCode).toBe(200);
+    const page1 = page1Resp.json();
+    expect(page1.orders.length).toBe(20);
+    expect(page1).toHaveProperty('nextCursor');
+    expect(typeof page1.nextCursor).toBe('string');
+
+    // Second page: use cursor from first page
+    const page2Resp = await app.inject({
+      method: 'GET',
+      url: `/orders?limit=20&cursor=${page1.nextCursor}`,
+    });
+    expect(page2Resp.statusCode).toBe(200);
+    const page2 = page2Resp.json();
+    expect(page2.orders.length).toBe(5);
+    expect(page2).not.toHaveProperty('nextCursor');
   });
 });

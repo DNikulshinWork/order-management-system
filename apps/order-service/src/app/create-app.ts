@@ -24,5 +24,29 @@ export function createApp(): FastifyInstance {
 
   app.register(ordersRoutes);
 
+  app.addHook('onResponse', async (request, reply) => {
+    if (reply.statusCode >= 400) {
+      const logData: Record<string, unknown> = {
+        method: request.method,
+        url: request.url,
+        statusCode: reply.statusCode,
+        responseTime: reply.elapsedTime,
+      };
+
+      // Добавляем тело запроса, если оно есть и это не GET
+      if (request.method !== 'GET' && request.body) {
+        try {
+          const bodyString =
+            typeof request.body === 'string' ? request.body : JSON.stringify(request.body);
+          logData.requestBody = bodyString.slice(0, 1000);
+        } catch {
+          // если сериализация не удалась, просто игнорируем
+        }
+      }
+
+      request.log.error(logData, 'Request error details');
+    }
+  });
+
   return app;
 }

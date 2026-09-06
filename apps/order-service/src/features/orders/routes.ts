@@ -4,6 +4,16 @@ import { NotFoundError } from '../../shared/errors.js';
 import * as repository from './repository.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 
+const getOrdersSchema = {
+  querystring: {
+    type: 'object',
+    properties: {
+      limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+      cursor: { type: 'string', minLength: 1 },
+    },
+  },
+} as const;
+
 // Единственный источник правды для допустимых статусов — сгенерированный
 // Prisma enum. JSON Schema и TS-тип (types.ts) теперь не могут разойтись.
 const orderStatusValues = Object.values(OrderStatus);
@@ -53,9 +63,14 @@ const updateOrderSchema = {
 };
 
 export async function ordersRoutes(app: FastifyInstance) {
-  app.get('/orders', async () => {
-    return repository.getOrders();
-  });
+  app.get<{ Querystring: { limit: number; cursor?: string } }>(
+    '/orders',
+    { schema: getOrdersSchema },
+    async (request) => {
+      const { limit, cursor } = request.query;
+      return repository.getOrdersPaginated(limit, cursor);
+    },
+  );
 
   app.get('/orders/:id', async (request) => {
     const { id } = request.params as { id: string };
