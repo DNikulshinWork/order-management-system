@@ -1,6 +1,8 @@
 {
   "extends": "@repo/typescript-config/node.json",
   "compilerOptions": {
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",
