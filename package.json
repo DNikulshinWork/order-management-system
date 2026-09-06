@@ -14,7 +14,8 @@
     "depcruise": "depcruise --config .dependency-cruiser.cjs apps packages",
     "prepare": "husky",
     "repomix": "pnpm dlx repomix --style markdown",
-    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm depcruise"
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm depcruise",
+    "precommit": "pnpm format && pnpm verify"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -53,8 +53,14 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
-      - name: Build
+      - name: Build (all packages via turbo)
         run: pnpm build
+
+      # Explicit build for api-gateway (verifies its build script works independently)
+      - name: Build API Gateway
+        run: pnpm --filter @repo/api-gateway build
+        env:
+          NODE_ENV: development
 
       - name: Dependency Cruise
         run: pnpm depcruise
@@ -65,5 +71,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
+      - name: Test (all packages via turbo)
         run: pnpm test
+
+      # Explicit test for api-gateway (verifies its test script works independently)
+      - name: Test API Gateway
+        run: pnpm --filter @repo/api-gateway test

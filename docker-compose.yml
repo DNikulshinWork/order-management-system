@@ -30,5 +30,19 @@ services:
       postgres:
         condition: service_healthy
 
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+    environment:
+      PORT: 8000
+      HOST: 0.0.0.0
+      NODE_ENV: production
+      ORDER_SERVICE_URL: http://order-service:3000
+    ports:
+      - '8000:8000'
+    depends_on:
+      - order-service
+
 volumes:
   order_pg_data:
