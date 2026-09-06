@@ -6,7 +6,6 @@
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
     "paths": {
       "@shared/*": ["./src/shared/*"],
       "@features/*": ["./src/features/*"],
