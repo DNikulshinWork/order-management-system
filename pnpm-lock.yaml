@@ -158,6 +158,9 @@ importers:
       prisma:
         specifier: ^7.10.0
         version: 7.10.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       tsx:
         specifier: ^4.7.0
         version: 4.23.13
@@ -2779,10 +2782,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.69.0(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2))(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)':
+  '@typescript-eslint/eslint-plugin@8.69.0(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)))(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
+      '@typescript-eslint/parser': 8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0))
       '@typescript-eslint/scope-manager': 8.69.0
       '@typescript-eslint/type-utils': 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
       '@typescript-eslint/utils': 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
@@ -4157,7 +4160,7 @@ snapshots:
 
   typescript-eslint@8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.69.0(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2))(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
+      '@typescript-eslint/eslint-plugin': 8.69.0(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)))(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
       '@typescript-eslint/parser': 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)
       '@typescript-eslint/typescript-estree': 8.69.0(typescript@6.0.2)
       '@typescript-eslint/utils': 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.2)

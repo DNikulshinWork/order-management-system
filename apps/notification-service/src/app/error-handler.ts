@@ -1,5 +1,5 @@
 import type { FastifyError, FastifyInstance } from 'fastify';
-import { AppError } from '../shared/errors.js';
+import { AppError } from '@shared/errors.js';
 
 export function registerErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler((error, request, reply) => {

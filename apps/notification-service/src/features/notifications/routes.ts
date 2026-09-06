@@ -1,6 +1,6 @@
-import { NotificationChannel, NotificationStatus } from '../../shared/enums.js';
+import { NotificationChannel, NotificationStatus } from '@shared/enums.js';
 import type { FastifyInstance } from 'fastify';
-import { NotFoundError } from '../../shared/errors.js';
+import { NotFoundError } from '@shared/errors.js';
 import * as repository from './repository.js';
 import type { CreateNotificationInput, UpdateStatusInput } from './types.js';
 
@@ -53,7 +53,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
     const query = request.query as { limit?: number; cursor?: string; status?: string };
     const limit = query.limit ?? 20;
     const cursor = query.cursor;
-    const status = query.status;
+    const status = query.status as NotificationStatus | undefined;
     return repository.getNotificationsPaginated(limit, cursor, status);
   });
 

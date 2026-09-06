@@ -1,6 +1,6 @@
-import { OrderStatus } from '../../shared/enums.js';
+import { OrderStatus } from '@shared/enums.js';
 import type { FastifyInstance } from 'fastify';
-import { NotFoundError } from '../../shared/errors.js';
+import { NotFoundError } from '@shared/errors.js';
 import * as repository from './repository.js';
 import type { CreateOrderInput, UpdateOrderInput } from './types.js';
 

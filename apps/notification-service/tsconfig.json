@@ -6,6 +6,13 @@
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["./src/shared/*"],
+      "@features/*": ["./src/features/*"],
+      "@app/*": ["./src/app/*"],
+      "@generated/*": ["./src/generated/*"]
+    },
     "rootDir": "./src",
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/tsbuildinfo.json",

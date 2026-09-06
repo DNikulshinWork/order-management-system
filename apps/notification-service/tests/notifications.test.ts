@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
-import { createApp } from '../src/app/create-app.js';
-import { getPrisma, disconnectPrisma } from '../src/shared/prisma.js';
+import { createApp } from '@app/create-app.js';
+import { getPrisma, disconnectPrisma } from '@shared/prisma.js';
 import type { FastifyInstance } from 'fastify';
 
 describe('Notifications API', () => {

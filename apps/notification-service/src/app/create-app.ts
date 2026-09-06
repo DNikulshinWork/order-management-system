@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
-import { notificationsRoutes } from '../features/notifications/index.js';
+import { notificationsRoutes } from '@features/notifications/index.js';
 import { registerErrorHandler } from './error-handler.js';
 import { buildLoggerOptions } from './logger.js';
 

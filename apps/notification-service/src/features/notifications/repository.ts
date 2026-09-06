@@ -1,5 +1,6 @@
-import { Prisma, NotificationStatus, Notification } from '../generated/prisma/client/index.js';
-import { getPrisma } from '../../shared/prisma.js';
+import { Prisma, NotificationStatus } from '@generated/prisma/client';
+import type { Notification } from '@generated/prisma/client';
+import { getPrisma } from '@shared/prisma.js';
 import type { CreateNotificationInput, PaginatedNotificationsResponse } from './types.js';
 
 export async function createNotification(input: CreateNotificationInput): Promise<Notification> {
@@ -32,15 +33,14 @@ export async function getNotificationsPaginated(
     skip: cursor ? 1 : 0,
   });
 
-  let nextCursor: string | undefined;
+  const response: PaginatedNotificationsResponse = { notifications: results };
 
   if (results.length > take) {
     const nextItem = results.pop()!;
-    nextCursor = nextItem.id;
-    return { notifications: results, nextCursor };
+    response.nextCursor = nextItem.id;
   }
 
-  return { notifications: results };
+  return response;
 }
 
 export async function getNotificationById(id: string): Promise<Notification | null> {

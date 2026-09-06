@@ -1,5 +1,5 @@
-import { Prisma, type Order as PrismaOrder } from '../../generated/prisma/client';
-import { getPrisma } from '../../shared/prisma.js';
+import { Prisma, type Order as PrismaOrder } from '@generated/prisma/client';
+import { getPrisma } from '@shared/prisma.js';
 import type { CreateOrderInput, UpdateOrderInput, PaginatedOrdersResponse } from './types.js';
 
 export async function createOrder(input: CreateOrderInput): Promise<PrismaOrder> {

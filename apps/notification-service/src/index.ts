@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { createApp } from './app/create-app.js';
-import { disconnectPrisma } from './shared/prisma.js';
+import { createApp } from '@app/create-app.js';
+import { disconnectPrisma } from '@shared/prisma.js';
 
 const port = Number(process.env.PORT) || 3001;
 const host = process.env.HOST || '0.0.0.0';
