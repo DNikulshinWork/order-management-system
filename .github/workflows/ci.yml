@@ -57,6 +57,8 @@ jobs:
 
       - name: Generate Prisma Client (order-service)
         run: pnpm --filter @repo/order-service exec prisma generate
+        env:
+          DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
 
       - name: Apply migrations (order-service)
         run: pnpm --filter @repo/order-service exec prisma migrate deploy
