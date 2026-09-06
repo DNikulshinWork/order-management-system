@@ -50,3 +50,12 @@ Health: GET http://localhost:3000/health
 4. Evolution (local first, extract when justified)
 
 See docs/architecture/README.md and docs/domain/.
+
+## Development workflow
+
+Before committing changes, always run:
+
+```bash
+pnpm format      # format all files
+pnpm verify      # run all checks (format:check, lint, typecheck, test, build, depcruise)
+```
