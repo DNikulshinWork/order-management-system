@@ -13,8 +13,11 @@ RUN pnpm install --frozen-lockfile --filter=@repo/order-service...
 RUN pnpm build --filter=@repo/order-service
 RUN pnpm --filter=@repo/order-service deploy --prod --legacy /deploy
 
+# ✅ Копируем сгенерированный Prisma Client из исходной папки в финальную
+COPY --from=build /app/apps/order-service/src/generated /deploy/src/generated
+
 WORKDIR /deploy
-RUN npx prisma generate
+# ❌ Удалена строка: RUN npx prisma generate
 
 FROM node:20.19.0-alpine AS runner
 ENV NODE_ENV=production

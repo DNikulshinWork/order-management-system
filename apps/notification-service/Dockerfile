@@ -13,8 +13,11 @@ RUN pnpm install --frozen-lockfile --filter=@repo/notification-service...
 RUN pnpm build --filter=@repo/notification-service
 RUN pnpm --filter=@repo/notification-service deploy --prod --legacy /deploy
 
+# ✅ Копируем сгенерированный Prisma Client в финальную папку
+COPY --from=build /app/apps/notification-service/src/generated /deploy/src/generated
+
 WORKDIR /deploy
-RUN npx prisma generate
+# ❌ Удалена строка: RUN npx prisma generate
 
 FROM node:20.19.0-alpine AS runner
 ENV NODE_ENV=production
