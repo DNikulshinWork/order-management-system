@@ -81,7 +81,7 @@ jobs:
       - name: Build order-service
         run: pnpm --filter @repo/order-service build
         env:
-        DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
+          DATABASE_URL: postgresql://order:order@localhost:5432/orders?schema=public
 
       - name: Build notification-service
         run: pnpm --filter @repo/notification-service build
@@ -90,13 +90,6 @@ jobs:
 
       - name: Build api-gateway
         run: pnpm --filter @repo/api-gateway build
-        # api-gateway не требует БД (если в будущем понадобится, добавим env)
-
-      # Explicit build for api-gateway (verifies its build script works independently)
-      - name: Build API Gateway
-        run: pnpm --filter @repo/api-gateway build
-        env:
-          NODE_ENV: development
 
       - name: Dependency Cruise
         run: pnpm depcruise
@@ -119,4 +112,3 @@ jobs:
 
       - name: Test api-gateway
         run: pnpm --filter @repo/api-gateway test
-        # api-gateway не требует БД
