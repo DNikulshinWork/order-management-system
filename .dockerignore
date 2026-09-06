@@ -9,3 +9,4 @@ coverage
 .vscode
 docker-compose.yml
 README.md
+.env*
